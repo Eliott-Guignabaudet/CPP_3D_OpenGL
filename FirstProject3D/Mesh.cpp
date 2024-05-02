@@ -98,28 +98,19 @@ void Mesh::InitVectors(const char* objPath)
             for (int i = 0; i < tempVerticesIndexs.size(); ++i)
             {
                 _verticeIndex.push_back(tempVerticesIndexs[i]);
-                if (i < verticesNormals.size())
-                {
+                // if (i < verticesNormals.size())
+                // {
                     _normalIndexs.push_back(verticesNormals[tempVerticesIndexs[i]] - 1);
-                }
-                if (i < verticesTextures.size())
-                {
+                // }
+                // if (i < verticesTextures.size())
+                // {
                     _uvIndexs.push_back(verticesTextures[tempVerticesIndexs[i]] - 1);
-                }
+                // }
             }
-            // exit(0);
-            // std::string x,y,z;
-            // temp >> x;
-            // temp >> y;
-            // temp >> z;
-            //
-            //
-            // _verticeIndex.push_back(std::stoul(x)-1);
-            // _verticeIndex.push_back(std::stoul(y)-1);
-            // _verticeIndex.push_back(std::stoul(z)-1);
-            // std::cout << "(" << x << ", " << y << ", " << z << ")" << std::endl;
+
         }
     }
+    std::cout << "Vertcice indexs: " << _verticeIndex.size() << std::endl;
     objFile.close();
     for (int i = 0; i < _verticeIndex.size(); ++i)
     {
@@ -159,15 +150,15 @@ std::vector<unsigned int> Mesh::TriangulateByIndexs(const std::vector<unsigned>&
             triangulatePoints.push_back(poly2D[i].id);
         }
     }
-    if (triangulatePoints.size() == 0)
-    {
-        std::cout << "(";
-        for (int i = 0; i < tpplPolygon.GetNumPoints(); ++i)
-        {
-            std::cout << "(" << tpplPolygon[i].x << ", " << tpplPolygon[i].y << ") ";
-        }
-        std::cout << ")" << std::endl;
-    }
+    // if (triangulatePoints.size() == 0)
+    // {
+    //     std::cout << "(";
+    //     for (int i = 0; i < tpplPolygon.GetNumPoints(); ++i)
+    //     {
+    //         std::cout << "(" << tpplPolygon[i].x << ", " << tpplPolygon[i].y << ") ";
+    //     }
+    //     std::cout << ")" << std::endl;
+    // }
     
     return triangulatePoints;
 }
@@ -203,23 +194,28 @@ void Mesh::GenerateNormals()
 
 void Mesh::GenerateAll()
 {
+    std::cout << "All vertices: "<< _allVertices.size() << std::endl;
+    std::cout << "UV Indexs: "<< _uvIndexs.size() << std::endl;
+    std::cout << "Normals Indexs: "<< _normalIndexs.size() << std::endl;
 
     for (int i = 0; i < _allVertices.size(); ++i)
     {
         _all.push_back(_allVertices[i]);
-        if (i < _uvs.size())
+        if (i < _uvIndexs.size())
         {
             _all.push_back(_uvs[_uvIndexs[i]]);
         }
-        else
-        {
-            _all.push_back({0,0,0});
-        }
-        if (i < _normals.size())
+        // else
+        // {
+        //     _all.push_back({0,0,0});
+        // }
+        if (i < _normalIndexs.size())
         {
             _all.push_back(_normals[i]);
         }
     }
+
+    std::cout << "All size: " << _all.size() << std::endl;
 }
 
 void Mesh::InitArray()
@@ -242,7 +238,7 @@ void Mesh::InitArray()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glGenTextures(1, &Texture);
     glBindTexture(GL_TEXTURE_2D, Texture);
@@ -267,7 +263,6 @@ void Mesh::InitArray()
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         }
-        std::cout << "Test2" << std::endl;
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -282,6 +277,6 @@ void Mesh::Draw()
 {
 
     glBindVertexArray(_VAO);
-    glDrawArrays(GL_TRIANGLES, 0, _all.size()/2);
+    glDrawArrays(GL_TRIANGLES, 0, _all.size()/3);
     glBindVertexArray(0);
 }
